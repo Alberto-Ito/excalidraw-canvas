@@ -1,0 +1,14 @@
+
+> excalidraw-canvas@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://169.254.83.107:3000
+✓ Ready in 3.2s
+
+○ Compiling / ...
+ GET / 200 in 67s (next.js: 66s, application-code: 1012ms)
+ GET / 200 in 7.3s (next.js: 6.2s, application-code: 1051ms)
+✓ Finished writing to filesystem cache in 14.5s
+[?25h

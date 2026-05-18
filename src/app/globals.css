@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+/*
+ * This Excalidraw version does not expose a supported prop to disable the
+ * library UI, so we hide the trigger/sidebar at the stylesheet layer.
+ */
+.excalidraw .default-sidebar,
+.excalidraw .default-sidebar-trigger,
+.excalidraw .layer-ui__library {
+  display: none !important;
+}

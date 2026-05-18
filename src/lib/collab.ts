@@ -1,0 +1,49 @@
+import type { AppState, BinaryFiles } from "@excalidraw/excalidraw/types";
+import type { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
+
+export const DEFAULT_ROOM_ID = "demo-room";
+// export const DEFAULT_ROOM_SERVER_URL = "http://localhost:3002";
+export const DEFAULT_ROOM_SERVER_URL = "https://acca-181-111-98-148.ngrok-free.app";
+
+export type SceneSnapshot = {
+  elements: readonly OrderedExcalidrawElement[];
+  appState: Pick<
+    AppState,
+    "scrollX" | "scrollY" | "viewBackgroundColor" | "zoom"
+  >;
+  files: BinaryFiles;
+};
+
+const textEncoder = new TextEncoder();
+const textDecoder = new TextDecoder();
+
+export function getCollabRoomServerUrl() {
+  return (
+    process.env.NEXT_PUBLIC_EXCALIDRAW_ROOM_URL ?? DEFAULT_ROOM_SERVER_URL
+  );
+}
+
+export function getRoomId(searchParams: URLSearchParams) {
+  return searchParams.get("room")?.trim() || DEFAULT_ROOM_ID;
+}
+
+export function serializeSceneSnapshot(scene: SceneSnapshot) {
+  return textEncoder.encode(JSON.stringify(scene)).buffer;
+}
+
+export function deserializeSceneSnapshot(data: ArrayBuffer) {
+  return JSON.parse(textDecoder.decode(new Uint8Array(data))) as SceneSnapshot;
+}
+
+export function getSceneSignature(scene: SceneSnapshot) {
+  return JSON.stringify({
+    elements: scene.elements.map((element) => ({
+      id: element.id,
+      version: element.version,
+      versionNonce: element.versionNonce,
+      isDeleted: element.isDeleted,
+    })),
+    appState: scene.appState,
+    fileIds: Object.keys(scene.files).sort(),
+  });
+}
