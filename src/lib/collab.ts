@@ -3,7 +3,7 @@ import type { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/ty
 
 export const DEFAULT_ROOM_ID = "demo-room";
 // export const DEFAULT_ROOM_SERVER_URL = "http://localhost:3002";
-export const DEFAULT_ROOM_SERVER_URL = "https://acca-181-111-98-148.ngrok-free.app";
+export const DEFAULT_ROOM_SERVER_URL = "https://excalidraw-room-dvd6.onrender.com/";
 
 export type SceneSnapshot = {
   elements: readonly OrderedExcalidrawElement[];
