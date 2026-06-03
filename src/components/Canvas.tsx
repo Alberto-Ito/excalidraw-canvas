@@ -146,7 +146,8 @@ export default function Canvas() {
       setCollabStatus(`Connected to room "${roomId}"`);
     });
 
-    socket.on("connect_error", () => {
+    socket.on("connect_error", (error) => {
+      console.error("[collab] connect_error", error);
       setCollabStatus("Collaboration server unavailable");
     });
 
@@ -184,6 +185,7 @@ export default function Canvas() {
     });
 
     socket.on("client-broadcast", (encryptedData: ArrayBuffer) => {
+      console.info("[collab] received client-broadcast");
       const api = excalidrawAPIRef.current;
 
       if (!api) {
@@ -255,19 +257,27 @@ export default function Canvas() {
             window.clearTimeout(collabBroadcastTimeoutRef.current);
           }
 
-          if (appState.cursorButton === "down") {
-            collabBroadcastTimeoutRef.current = window.setTimeout(() => {
-              if (latestSceneSnapshotRef.current) {
-                socketRef.current?.emit(
-                  "server-broadcast",
-                  roomId,
-                  serializeSceneSnapshot(latestSceneSnapshotRef.current),
-                  REMOTE_SCENE_IV,
-                );
-              }
-            }, COLLAB_BROADCAST_DELAY_MS);
-            return;
-          }
+          collabBroadcastTimeoutRef.current = window.setTimeout(() => {
+            const socket = socketRef.current;
+            const latestSceneSnapshot = latestSceneSnapshotRef.current;
+
+            if (!socket || !socket.connected || !latestSceneSnapshot) {
+              return;
+            }
+
+            console.info("[collab] emit server-broadcast", {
+              connected: socket.connected,
+              roomId,
+              elements: latestSceneSnapshot.elements.length,
+            });
+
+            socket.emit(
+              "server-broadcast",
+              roomId,
+              serializeSceneSnapshot(latestSceneSnapshot),
+              REMOTE_SCENE_IV,
+            );
+          }, COLLAB_BROADCAST_DELAY_MS);
         }}
       />
     </section>
