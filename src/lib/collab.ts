@@ -2,8 +2,6 @@ import type { AppState, BinaryFiles } from "@excalidraw/excalidraw/types";
 import type { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 
 export const DEFAULT_ROOM_ID = "demo-room";
-// export const DEFAULT_ROOM_SERVER_URL = "http://localhost:3002";
-export const DEFAULT_ROOM_SERVER_URL = "https://excalidraw-room-dvd6.onrender.com/";
 
 export type SceneSnapshot = {
   elements: readonly OrderedExcalidrawElement[];
@@ -18,9 +16,15 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
 export function getCollabRoomServerUrl() {
-  return (
-    process.env.NEXT_PUBLIC_EXCALIDRAW_ROOM_URL ?? DEFAULT_ROOM_SERVER_URL
-  );
+  const roomServerUrl = process.env.NEXT_PUBLIC_EXCALIDRAW_ROOM_URL;
+
+  if (!roomServerUrl) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_EXCALIDRAW_ROOM_URL. Configure the collaboration room server URL in your environment.",
+    );
+  }
+
+  return roomServerUrl;
 }
 
 export function getRoomId(searchParams: URLSearchParams) {

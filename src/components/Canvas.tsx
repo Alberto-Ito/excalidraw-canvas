@@ -77,6 +77,7 @@ const BasicExcalidraw = dynamic(
 
 const COLLAB_BROADCAST_DELAY_MS = 150;
 const REMOTE_SCENE_IV = new Uint8Array(12);
+const DEBUG_MODE = process.env.NEXT_PUBLIC_DEBUG_MODE === "true";
 
 async function createInitialScene(): Promise<ExcalidrawInitialDataState> {
   return {
@@ -185,7 +186,9 @@ export default function Canvas() {
     });
 
     socket.on("client-broadcast", (encryptedData: ArrayBuffer) => {
-      console.info("[collab] received client-broadcast");
+      if (DEBUG_MODE) {
+        console.debug("[collab] received client-broadcast");
+      }
       const api = excalidrawAPIRef.current;
 
       if (!api) {
@@ -265,11 +268,13 @@ export default function Canvas() {
               return;
             }
 
-            console.info("[collab] emit server-broadcast", {
-              connected: socket.connected,
-              roomId,
-              elements: latestSceneSnapshot.elements.length,
-            });
+            if (DEBUG_MODE) {
+              console.debug("[collab] emit server-broadcast", {
+                connected: socket.connected,
+                roomId,
+                elements: latestSceneSnapshot.elements.length,
+              });
+            }
 
             socket.emit(
               "server-broadcast",
